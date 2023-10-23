@@ -24,13 +24,24 @@ func (i Internal) FileName() string {
 var internalFile = `
 package wiring
 
-import "gango/src/lib/monitor"
+import (
+	"gango/src/lib/monitor"
+	"gango/src/lib/executors"
+)
+
 
 func (w *Wire) GetMetricsServer() *monitor.PrometheusMetricsServer {
 	return &monitor.PrometheusMetricsServer{
 		Url:  w.config.Monitor.Host,
 		Port: w.config.Monitor.Port,
 	}
+}
+
+func (w *Wire) GetExecutorsRegistry() *executors.Registry {
+	if w.executorsRegistry == nil {
+		w.executorsRegistry = &executors.Registry{}
+	}
+	return w.executorsRegistry
 }
 
 `

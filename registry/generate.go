@@ -3,6 +3,7 @@ package registry
 import (
 	"gango/src/base"
 	"gango/src/base/cmd"
+	"gango/src/libs/executors"
 	"gango/src/libs/logging"
 	"gango/src/libs/misc"
 	"gango/src/libs/monitor"
@@ -19,6 +20,7 @@ func Generate(name string) {
 	register.Register("lib/signals", misc.Signals{})
 	register.Register("lib/monitor", monitor.Monitors{})
 	register.Register("lib/logging", logging.Logging{})
+	register.Register("lib/executors", executors.Execute{})
 	register.Register("middlewares", middlwares.Middleware{})
 	register.Register("cmd/base", cmd.ProjectName{})
 	register.Register("cmd/base/root", cmd.Root{})

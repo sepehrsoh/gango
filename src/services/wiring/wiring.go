@@ -24,7 +24,11 @@ func (w Wiring) FileName() string {
 var wiringFile = `
 package wiring
 
-import "project/src/service/configs"
+import (
+	"project/src/service/configs"
+	"gango/src/lib/executors"
+
+)
 
 
 func NewWire() *Wire {
@@ -36,7 +40,9 @@ func NewWire() *Wire {
 }
 
 type Wire struct {
-	config configs.Config
+	config 				configs.Config
+	executorsRegistry   *executors.Registry
+
 }
 
 func (w *Wire) initProviders() {
