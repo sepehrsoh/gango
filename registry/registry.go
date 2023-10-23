@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 )
 
+var logger = lib.GetLogger("registry")
+
 type Registry struct {
 	Files map[string]lib.IWriteFolder
 }
@@ -20,6 +22,7 @@ func (r *Registry) Register(name string, file lib.IWriteFolder) {
 }
 
 func (r *Registry) Run(basePath string) {
+	logger.Infoln("Start build project at new directory:", basePath)
 	if basePath == "" {
 		basePath = "./"
 	}

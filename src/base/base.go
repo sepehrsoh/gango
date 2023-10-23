@@ -1,7 +1,6 @@
 package base
 
 import (
-	"fmt"
 	"gango/lib"
 	"gango/utils"
 	"os"
@@ -28,11 +27,9 @@ func makeMainDirectory(name string) {
 }
 
 func createGoMod(name string) {
-	err := exec.Command("go", "mod", "init", name).Run()
-	if err != nil {
-		logger.Panic(err)
-	}
-	err = exec.Command("mv", "go.mod", fmt.Sprintf("%s/", name)).Run()
+	cmd := exec.Command("go", "mod", "init", name)
+	cmd.Dir = name
+	err := cmd.Run()
 	if err != nil {
 		logger.Panic(err)
 	}

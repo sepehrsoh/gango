@@ -21,3 +21,5 @@
 go.work
 
 vendor
+service.log
+/project

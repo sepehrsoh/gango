@@ -52,3 +52,9 @@ go-lint:
 build-docker:
 	make linux
 	docker build . -t gango:latest
+
+.PHONY: test-project
+test-project:
+	@rm -rf ./project
+	make all
+	./gango generate project
