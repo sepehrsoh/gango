@@ -42,7 +42,7 @@ func NewConfigFromEnv() Config {
 			Port: GetEnv("SERVER_PORT", "8000"),
 		},
 		Monitor: Monitor{
-			Host: GetEnv("MONITOR_HOST", "localhost"),
+			Host: GetEnv("MONITOR_ROUT", "/metrics"),
 			Port: GetEnv("MONITOR_PORT", "9090"),
 		},
 		Redis: Redis{
