@@ -25,9 +25,10 @@ var internalFile = `
 package wiring
 
 import (
-    "gango/src/middlewares"
-	"gango/src/lib/monitor"
+	helloWorld "gango/src/hello-world"
 	"gango/src/lib/executors"
+	"gango/src/lib/monitor"
+	"gango/src/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -51,8 +52,12 @@ func (w *Wire) GetAuthService() gin.HandlerFunc {
 }
 
 func (w *Wire) registerHandlers(engine *gin.Engine) {
-	// TODO update below line base on your structure
-	//v1 := engine.Group("/v1")
-	//w.GetController().RegisterRoutes(v1)
+	// TODO update below lines base on your controllers
+	v1 := engine.Group("/v1")
+	w.GetHelloWordController().RegisterRoutes(v1)
+}
+
+func (w *Wire) GetHelloWordController() *helloWorld.HelloWorldController {
+	return helloWorld.NewHelloWorldController()
 }
 `

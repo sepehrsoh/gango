@@ -1,9 +1,24 @@
 package misc
 
 import (
-	"gango/utils"
 	"path/filepath"
+
+	"gango/utils"
 )
+
+type Signals struct{}
+
+func (s Signals) FileName() string {
+	return "signals.go"
+}
+
+func (s Signals) WriteFolder(dir string) error {
+	return utils.WriteFile(dir, filepath.Join(s.FilePath(), s.FileName()), signals)
+}
+
+func (s Signals) FilePath() string {
+	return "/src/lib/misc"
+}
 
 var signals = `
 package misc
@@ -21,17 +36,3 @@ func CreateTerminateChannel() chan os.Signal {
 	return c
 }
 `
-
-type Signals struct{}
-
-func (s Signals) FileName() string {
-	return "signals.go"
-}
-
-func (s Signals) WriteFolder(dir string) error {
-	return utils.WriteFile(dir, filepath.Join(s.FilePath(), s.FileName()), signals)
-}
-
-func (s Signals) FilePath() string {
-	return "/src/lib/misc"
-}
