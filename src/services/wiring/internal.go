@@ -25,10 +25,12 @@ var internalFile = `
 package wiring
 
 import (
+    "gango/src/middlewares"
 	"gango/src/lib/monitor"
 	"gango/src/lib/executors"
-)
 
+	"github.com/gin-gonic/gin"
+)
 
 func (w *Wire) GetMetricsServer() *monitor.PrometheusMetricsServer {
 	return &monitor.PrometheusMetricsServer{
@@ -44,4 +46,13 @@ func (w *Wire) GetExecutorsRegistry() *executors.Registry {
 	return w.executorsRegistry
 }
 
+func (w *Wire) GetAuthService() gin.HandlerFunc {
+	return middlewares.NewMiddleware().AuthMiddleWare()
+}
+
+func (w *Wire) registerHandlers(engine *gin.Engine) {
+	// TODO update below line base on your structure
+	//v1 := engine.Group("/v1")
+	//w.GetController().RegisterRoutes(v1)
+}
 `

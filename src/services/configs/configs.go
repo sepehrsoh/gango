@@ -45,12 +45,18 @@ func NewConfigFromEnv() Config {
 			Host: GetEnv("MONITOR_HOST", "localhost"),
 			Port: GetEnv("MONITOR_PORT", "9090"),
 		},
+		Redis: Redis{
+			Server:   GetEnv("REDIS_SERVER", "localhost"),
+			DB:  	  GetEnv("REDIS_DB", "0"),
+			Password: GetEnv("REDIS_PASSWORD", ""),
+		},
 	}
 }
 
 type Config struct {
 	ServerAddress ServerAddress
 	Monitor       Monitor
+	Redis         Redis
 }
 
 type ServerAddress struct {
@@ -61,5 +67,11 @@ type ServerAddress struct {
 type Monitor struct {
 	Host string
 	Port string
+}
+
+type Redis struct {
+	Server   string
+	DB 	     string
+	Password string
 }
 `

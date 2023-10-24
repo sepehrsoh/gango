@@ -25,6 +25,7 @@ package base
 
 import (
 	"gango/src/lib/misc"
+	"gango/src/service/wiring"
 
 	"github.com/spf13/cobra"
 )
@@ -38,7 +39,10 @@ var serveCmd = &cobra.Command{
 }
 
 func serve() {
-	// TODO implement logic to start service
+	wiringService := wiring.NewWire()
+	wiringService.GetExecutorsRegistry().Start()
+	httpServer := wiringService.GetGinServer()
+	go httpServer()
 
 	term := misc.CreateTerminateChannel()
 	<-term

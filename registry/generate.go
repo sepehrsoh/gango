@@ -9,6 +9,7 @@ import (
 	"gango/src/libs/monitor"
 	"gango/src/middlwares"
 	"gango/src/services/configs"
+	"gango/src/services/providers"
 	"gango/src/services/wiring"
 )
 
@@ -20,14 +21,27 @@ func Generate(name string) {
 	register.Register("lib/signals", misc.Signals{})
 	register.Register("lib/monitor", monitor.Monitors{})
 	register.Register("lib/logging", logging.Logging{})
-	register.Register("lib/executors", executors.Execute{})
+	register.Register("lib/executors/registry", executors.Registry{})
+	register.Register("lib/executors/executors", executors.Executors{})
+
 	register.Register("middlewares", middlwares.Middleware{})
+
 	register.Register("cmd/base", cmd.ProjectName{})
 	register.Register("cmd/base/root", cmd.Root{})
 	register.Register("cmd/base/serve", cmd.Serve{})
+
 	register.Register("service/configs/config", configs.Config{})
+
+	register.Register("service/providers/redis", providers.Redis{})
+	register.Register("service/providers/gin", providers.Gin{})
+
 	register.Register("service/wiring/wiring", wiring.Wiring{})
 	register.Register("service/wiring/internal", wiring.Internal{})
+	register.Register("service/wiring/metric", wiring.Metrics{})
+	register.Register("service/wiring/service", wiring.Service{})
 
 	register.Run(name)
+
+	finalize := base.FinalizeProject{}
+	finalize.Run(name)
 }

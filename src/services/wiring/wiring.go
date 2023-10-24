@@ -25,9 +25,12 @@ var wiringFile = `
 package wiring
 
 import (
-	"project/src/service/configs"
-	"gango/src/lib/executors"
+	"time"
 
+	"gango/src/lib/executors"
+	"gango/src/service/configs"
+
+	"github.com/go-redis/redis"
 )
 
 
@@ -42,24 +45,30 @@ func NewWire() *Wire {
 type Wire struct {
 	config 				configs.Config
 	executorsRegistry   *executors.Registry
-
+	// add more providers like redis implementation here
+	redis               *redis.Client
 }
 
+//	initProviders initials providers you are using
 func (w *Wire) initProviders() {
-	//	TODO implement providers registration
-}
-
-func (w *Wire) initRepositoryRegistry() {
-	//	TODO implement command repository registration
+	//  w.GetRedis()
 }
 
 func (w *Wire) init() {
 	w.initProviders()
 	w.initMetrics()
-	w.initRepositoryRegistry()
+	w.initExecutorsRegistry()
 }
 
 func (w *Wire) initMetrics() {
-	//	TODO implement metrics registration
+	StartTime.Add(float64(time.Now().Unix()))
+	metricsServer := w.GetMetricsServer()
+	metricsServer.Register(executors.WorkerCounter)
+	metricsServer.Register(StartTime)
+}
+
+func (w *Wire) initExecutorsRegistry() {
+	registry := w.GetExecutorsRegistry()
+	registry.Register(w.GetMetricsServer())
 }
 `

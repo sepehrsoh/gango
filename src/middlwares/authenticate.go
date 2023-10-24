@@ -5,27 +5,6 @@ import (
 	"path/filepath"
 )
 
-var middleware = `
-package middlewares
-
-import (
-	"context"
-)
-
-type AuthService struct {
-
-}
-
-func NewAuthService() *AuthService {
-	return &AuthService{}
-}
-
-func (a *AuthService) Authenticate(ctx context.Context) (context.Context, error) {
-	// TODO complete with your code
-	return ctx, nil
-}
-`
-
 type Middleware struct{}
 
 func (m Middleware) FileName() string {
@@ -39,3 +18,25 @@ func (m Middleware) WriteFolder(dir string) error {
 func (m Middleware) FilePath() string {
 	return "/src/middlewares"
 }
+
+var middleware = `
+package middlewares
+
+import (
+	"github.com/gin-gonic/gin"
+)
+
+type Middleware struct {
+}
+
+func NewMiddleware() *Middleware {
+	return &Middleware{}
+}
+
+func (m *Middleware) AuthMiddleWare() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// TODO complete with your logic
+	}
+}
+
+`

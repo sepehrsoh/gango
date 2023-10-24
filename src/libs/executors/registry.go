@@ -6,22 +6,22 @@ import (
 	"strings"
 )
 
-type Execute struct {
+type Registry struct {
 }
 
-func (e Execute) WriteFolder(dir string) error {
-	return utils.WriteFile(dir, filepath.Join(e.FilePath(), e.FileName()), strings.ReplaceAll(executorFile, "gango", dir))
+func (e Registry) WriteFolder(dir string) error {
+	return utils.WriteFile(dir, filepath.Join(e.FilePath(), e.FileName()), strings.ReplaceAll(registryFile, "gango", dir))
 }
 
-func (e Execute) FilePath() string {
+func (e Registry) FilePath() string {
 	return "/src/lib/executors"
 }
 
-func (e Execute) FileName() string {
-	return "executors.go"
+func (e Registry) FileName() string {
+	return "registry.go"
 }
 
-var executorFile = `
+var registryFile = `
 package executors
 
 import (
