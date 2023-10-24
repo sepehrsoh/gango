@@ -36,12 +36,12 @@ FROM golang:1.20-alpine as base
 WORKDIR /build
 COPY . /build/.
 
-RUN["make","all"]
+CMD ["make","all"]
 
 FROM base 
 
 WORKDIR /app
-COPY gango ./app/.
+COPY gango gango
 
 CMD ["./gango","serve"]
 `
