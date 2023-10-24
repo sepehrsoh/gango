@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+
+vendor
+service.log
+/project
+.idea
