@@ -1,5 +1,3 @@
-Creating a great README for your open-source project is crucial for attracting and engaging potential users and contributors. Here's a template for your "Gango" Go-based backend service project's README:
-
 # Gango: A Go-Based Backend Service Framework
 
 Gango is an open-source project written in Go that provides a robust and flexible foundation for developing backend services. Whether you're a seasoned developer or just getting started, Gango simplifies the process of creating backend systems by automating many of the essential tasks.
