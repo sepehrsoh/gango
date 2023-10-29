@@ -1,0 +1,26 @@
+// Code generate by Gango
+package base
+
+import (
+	"{{.ProjectName}}/src/lib/logging"
+
+	"github.com/spf13/cobra"
+)
+
+var (
+	rootCmd = &cobra.Command{
+		Use:   "{{.ProjectName}}",
+		Short: "Create golang project",
+	}
+	logger =logging.GetLogger("cmd")
+)
+
+func Execute() {
+	rootCmd.AddCommand(serveCmd)
+	err := rootCmd.Execute()
+	if err != nil {
+		logger.Errorln(err)
+	}
+}
+
+func init() {}

@@ -1,8 +1,6 @@
 package misc
 
 import (
-	"path/filepath"
-
 	"gango/utils"
 )
 
@@ -13,26 +11,18 @@ func (s Signals) FileName() string {
 }
 
 func (s Signals) WriteFolder(dir string) error {
-	return utils.WriteFile(dir, filepath.Join(s.FilePath(), s.FileName()), signals)
+	return utils.EnrichTemplate(dir, s)
 }
 
 func (s Signals) FilePath() string {
 	return "/src/lib/misc"
 }
 
-var signals = `
-package misc
-
-import (
-	"os"
-	"os/signal"
-	"syscall"
-)
-
-func CreateTerminateChannel() chan os.Signal {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-
-	return c
+func (s Signals) TemplateName() string {
+	return "misc-signals.tmpl"
 }
-`
+
+func (s Signals) TemplateData(name string) map[string]interface{} {
+	return map[string]interface{}{
+	}
+}

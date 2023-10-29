@@ -1,0 +1,20 @@
+// Code generate by Gango
+package middlewares
+
+import (
+	"github.com/gin-gonic/gin"
+)
+
+type Middleware struct {
+}
+
+func NewMiddleware() *Middleware {
+	return &Middleware{}
+}
+
+func (m *Middleware) AuthMiddleWare() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// TODO complete with your logic
+	}
+}
+

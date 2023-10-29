@@ -1,15 +1,13 @@
 package errs
 
 import (
-	"path/filepath"
-
 	"gango/utils"
 )
 
 type Errors struct{}
 
 func (s Errors) WriteFolder(dir string) error {
-	return utils.WriteFile(dir, filepath.Join(s.FilePath(), s.FileName()), signals)
+	return utils.EnrichTemplate(dir, s)
 }
 
 func (s Errors) FileName() string {
@@ -20,10 +18,13 @@ func (s Errors) FilePath() string {
 	return "/src/lib/errs"
 }
 
-var signals = `// Code generate by Gogang
-package errs
 
-var (
-	ErrInternalServer = "internal server error"
-)
-`
+func (s Errors) TemplateName() string {
+	return "signals.tmpl"
+}
+
+func (s Errors) TemplateData(name string) map[string]interface{} {
+	return map[string]interface{}{
+		"ProjectName": name,
+	}
+}

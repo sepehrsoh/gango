@@ -1,0 +1,50 @@
+// Code generate by Gango
+package wiring
+
+import (
+	"time"
+
+	"{{.ProjectName}}/src/lib/executors"
+	"{{.ProjectName}}/src/service/configs"
+
+	"github.com/go-redis/redis"
+)
+
+
+func NewWire() *Wire {
+	wire := &Wire{
+		config: configs.NewConfigFromEnv(),
+	}
+	wire.init()
+	return wire
+}
+
+type Wire struct {
+	config 				configs.Config
+	executorsRegistry   *executors.Registry
+	// add more providers like redis implementation here
+	redis               *redis.Client
+}
+
+//	initProviders initials providers you are using
+func (w *Wire) initProviders() {
+	//  w.GetRedis()
+}
+
+func (w *Wire) init() {
+	w.initProviders()
+	w.initMetrics()
+	w.initExecutorsRegistry()
+}
+
+func (w *Wire) initMetrics() {
+	StartTime.Add(float64(time.Now().Unix()))
+	metricsServer := w.GetMetricsServer()
+	metricsServer.Register(executors.WorkerCounter)
+	metricsServer.Register(StartTime)
+}
+
+func (w *Wire) initExecutorsRegistry() {
+	registry := w.GetExecutorsRegistry()
+	registry.Register(w.GetMetricsServer())
+}

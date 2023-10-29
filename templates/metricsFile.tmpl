@@ -1,0 +1,16 @@
+// Code generate by Gango
+package wiring
+
+import (
+	"{{.ProjectName}}/src/lib/monitor"
+
+	"github.com/prometheus/client_golang/prometheus"
+)
+
+var (
+	StartTime = prometheus.NewCounter(prometheus.CounterOpts{
+		Namespace: monitor.NameSpace,
+		Name:      "{{.ProjectName}}_start_time",
+		Help:      "{{.ProjectName}} start time",
+	})
+)
