@@ -1,12 +1,30 @@
 package utils
 
 import (
+	"gango/lib"
 	"os"
 	"path/filepath"
+	"text/template"
 )
 
-func WriteFile(dir, path string, data string) error {
-	err := os.WriteFile(filepath.Join(dir, path), []byte(data), 0777)
+func EnrichTemplate(dir string, file lib.IWriteTemplate) error {
+	templateFile := file.TemplateName();
+	templateContent, err := os.ReadFile(filepath.Join("templates", templateFile))
+	if err != nil {
+		return err
+	}
+	tmpl, err := template.New(templateFile).Parse(string(templateContent))
+	if err != nil {
+		return err
+	}
+
+	output, err := os.Create(filepath.Join(dir, file.FilePath(), file.FileName()))
+	if err != nil {
+		return err
+	}
+	defer output.Close()
+
+	err = tmpl.Execute(output, file.TemplateData(dir))
 	if err != nil {
 		return err
 	}

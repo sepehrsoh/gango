@@ -1,0 +1,39 @@
+// Code generate by Gango
+package wiring
+
+import (
+	helloWorld "{{.ProjectName}}/src/hello-world"
+	"{{.ProjectName}}/src/lib/executors"
+	"{{.ProjectName}}/src/lib/monitor"
+	"{{.ProjectName}}/src/middlewares"
+
+	"github.com/gin-gonic/gin"
+)
+
+func (w *Wire) GetMetricsServer() *monitor.PrometheusMetricsServer {
+	return &monitor.PrometheusMetricsServer{
+		Url:  w.config.Monitor.Host,
+		Port: w.config.Monitor.Port,
+	}
+}
+
+func (w *Wire) GetExecutorsRegistry() *executors.Registry {
+	if w.executorsRegistry == nil {
+		w.executorsRegistry = &executors.Registry{}
+	}
+	return w.executorsRegistry
+}
+
+func (w *Wire) GetAuthService() gin.HandlerFunc {
+	return middlewares.NewMiddleware().AuthMiddleWare()
+}
+
+func (w *Wire) registerHandlers(engine *gin.Engine) {
+	// TODO update below lines base on your controllers
+	v1 := engine.Group("/v1")
+	w.GetHelloWordController().RegisterRoutes(v1)
+}
+
+func (w *Wire) GetHelloWordController() *helloWorld.HelloWorldController {
+	return helloWorld.NewHelloWorldController()
+}

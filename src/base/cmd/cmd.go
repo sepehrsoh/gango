@@ -2,15 +2,13 @@ package cmd
 
 import (
 	"gango/utils"
-	"path/filepath"
-	"strings"
 )
 
 type ProjectName struct {
 }
 
-func (m ProjectName) WriteFolder(dir string) error {
-	return utils.WriteFile(dir, filepath.Join(m.FilePath(), m.FileName()), strings.ReplaceAll(mainFile, "gango", dir))
+func (p ProjectName) WriteFolder(dir string) error {
+	return utils.EnrichTemplate(dir, p)
 }
 
 func (p ProjectName) FilePath() string {
@@ -21,12 +19,12 @@ func (p ProjectName) FileName() string {
 	return "base.go"
 }
 
-var mainFile = `
-package main
-
-import "gango/cmd/base"
-
-func main() {
-	base.Execute()
+func (p ProjectName) TemplateName() string {
+	return "mainFile.tmpl"
 }
-`
+
+func (p ProjectName) TemplateData(name string) map[string]interface{} {
+	return map[string]interface{}{
+		"ProjectName": name,
+	}
+}

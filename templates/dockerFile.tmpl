@@ -1,0 +1,14 @@
+# Code generate by Gango
+FROM golang:1.20-alpine as base
+
+WORKDIR /build
+COPY . /build/.
+
+CMD ["make","all"]
+
+FROM base 
+
+WORKDIR /app
+COPY {{.ProjectName}} {{.ProjectName}}
+
+CMD ["./{{.ProjectName}}","serve"]

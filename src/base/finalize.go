@@ -3,7 +3,6 @@ package base
 import (
 	"gango/utils"
 	"os/exec"
-	"strings"
 )
 
 type FinalizeProject struct {
@@ -23,25 +22,30 @@ func downloadPackages(name string) {
 	}
 }
 
+type DockerfileWriter struct {
+}
+
+func (d DockerfileWriter) TemplateName() string {
+	return "dockerFile.tmpl"
+}
+
+func (d DockerfileWriter) TemplateData(name string) map[string]interface{} {
+	return map[string]interface{}{
+		"ProjectName": name,
+	}
+}
+
+func (d DockerfileWriter) FilePath() string {
+	return ""
+}
+
+func (d DockerfileWriter) FileName() string {
+	return "Dockerfile"
+}
+
 func createDockerfile(name string) {
-	err := utils.WriteFile(name, "Dockerfile", strings.ReplaceAll(dockerFile, "gango", name))
+	err := utils.EnrichTemplate(name, DockerfileWriter{})
 	if err != nil {
 		logger.Panic(err)
 	}
 }
-
-var dockerFile = `
-FROM golang:1.20-alpine as base
-
-WORKDIR /build
-COPY . /build/.
-
-CMD ["make","all"]
-
-FROM base 
-
-WORKDIR /app
-COPY gango gango
-
-CMD ["./gango","serve"]
-`

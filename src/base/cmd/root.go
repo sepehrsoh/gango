@@ -2,15 +2,13 @@ package cmd
 
 import (
 	"gango/utils"
-	"path/filepath"
-	"strings"
 )
 
 type Root struct {
 }
 
 func (r Root) WriteFolder(dir string) error {
-	return utils.WriteFile(dir, filepath.Join(r.FilePath(), r.FileName()), strings.ReplaceAll(rootFile, "gango", dir))
+	return utils.EnrichTemplate(dir, r)
 }
 
 func (r Root) FilePath() string {
@@ -19,6 +17,16 @@ func (r Root) FilePath() string {
 
 func (r Root) FileName() string {
 	return "root.go"
+}
+
+func (r Root) TemplateName() string {
+	return "rootFile.tmpl"
+}
+
+func (r Root) TemplateData(name string) map[string]interface{} {
+	return map[string]interface{}{
+		"ProjectName": name,
+	}
 }
 
 var rootFile = `

@@ -2,15 +2,13 @@ package executors
 
 import (
 	"gango/utils"
-	"path/filepath"
-	"strings"
 )
 
 type Registry struct {
 }
 
 func (e Registry) WriteFolder(dir string) error {
-	return utils.WriteFile(dir, filepath.Join(e.FilePath(), e.FileName()), strings.ReplaceAll(registryFile, "gango", dir))
+	return utils.EnrichTemplate(dir, e)
 }
 
 func (e Registry) FilePath() string {
@@ -21,45 +19,12 @@ func (e Registry) FileName() string {
 	return "registry.go"
 }
 
-var registryFile = `
-package executors
-
-import (
-	"os"
-	"os/signal"
-	"syscall"
-
-	"gango/src/lib/logging"
-)
-
-var logger = logging.GetLogger("executors")
-
-type IWorker interface {
-	Loop() error
+func (e Registry) TemplateName() string {
+	return "registryFile.tmpl"
 }
 
-type IExecutor interface {
-	Start(interrupt <-chan os.Signal)
-}
-
-
-type Registry struct {
-	executors []IExecutor
-}
-
-func (w *Registry) Register(executor IExecutor) *Registry {
-	w.executors = append(w.executors, executor)
-	return w
-}
-
-func (w *Registry) Start() {
-	logger.Info("Starting workers...")
-	for _, executor := range w.executors {
-		c := make(chan os.Signal)
-		signal.Notify(c, syscall.SIGTERM, syscall.SIGINT)
-
-		go executor.Start(c)
+func (e Registry) TemplateData(name string) map[string]interface{} {
+	return map[string]interface{}{
+		"ProjectName": name,
 	}
 }
-
-`

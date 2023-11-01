@@ -1,0 +1,18 @@
+// Code generate by Gango
+package providers
+
+import (
+	"time"
+
+	ginzap "github.com/gin-contrib/zap"
+	"github.com/gin-gonic/gin"
+)
+
+func NewGinServer(middleware gin.HandlerFunc) *gin.Engine {
+	engine := gin.New()
+	engine.Use(ginzap.Ginzap(logger.Desugar(), time.RFC3339, true))
+	engine.Use(middleware)
+	engine.Use(ginzap.RecoveryWithZap(logger.Desugar(), true))
+	return engine
+}
+

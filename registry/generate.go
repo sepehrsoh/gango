@@ -9,7 +9,7 @@ import (
 	"gango/src/libs/logging"
 	"gango/src/libs/misc"
 	"gango/src/libs/monitor"
-	"gango/src/middlwares"
+	"gango/src/middlewares"
 	"gango/src/services/configs"
 	"gango/src/services/providers"
 	"gango/src/services/wiring"
@@ -27,7 +27,7 @@ func Generate(name string) {
 	register.Register("lib/executors/registry", executors.Registry{})
 	register.Register("lib/executors/executors", executors.Executors{})
 
-	register.Register("middlewares", middlwares.Middleware{})
+	register.Register("middlewares", middlewares.Middleware{})
 
 	register.Register("cmd/base", cmd.ProjectName{})
 	register.Register("cmd/base/root", cmd.Root{})

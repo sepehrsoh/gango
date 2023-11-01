@@ -1,0 +1,27 @@
+// Code generate by Gango
+package base
+
+import (
+	"{{.ProjectName}}/src/lib/misc"
+	"{{.ProjectName}}/src/service/wiring"
+
+	"github.com/spf13/cobra"
+)
+
+var serveCmd = &cobra.Command{
+	Use:   "serve",
+	Short: "Serving {{.ProjectName}} service.",
+	Run: func(cmd *cobra.Command, args []string) {
+		serve()
+	},
+}
+
+func serve() {
+	wiringService := wiring.NewWire()
+	wiringService.GetExecutorsRegistry().Start()
+	httpServer := wiringService.GetGinServer()
+	go httpServer()
+
+	term := misc.CreateTerminateChannel()
+	<-term
+}

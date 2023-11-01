@@ -9,5 +9,11 @@ type LoggerFactory interface {
 type IWriteFolder interface {
 	WriteFolder(dir string) error
 	FilePath() string
+}
+
+type IWriteTemplate interface {
+	FilePath() string
 	FileName() string
+	TemplateName() string 
+	TemplateData(name string) map[string]interface{} 
 }

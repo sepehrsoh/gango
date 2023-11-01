@@ -1,0 +1,57 @@
+// Code generate by Gango
+package monitor
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+	"os"
+
+	"{{.ProjectName}}/src/lib/logging"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+)
+
+// TODO replace your name space
+const NameSpace = "{{.NameSpace}}"
+
+var logger = logging.GetLogger("promethues")
+
+type PrometheusMetricsServer struct {
+	Url  string
+	Port string
+}
+
+func (s PrometheusMetricsServer) Register(collector prometheus.Collector) {
+	prometheus.MustRegister(collector)
+}
+
+func (s PrometheusMetricsServer) Start(interrupt <-chan os.Signal) {
+	mux := http.NewServeMux()
+	mux.Handle(s.Url, promhttp.Handler())
+
+	addr := fmt.Sprintf(":%s", s.Port)
+	server := &http.Server{
+		Addr:    addr,
+		Handler: mux,
+	}
+	go func() {
+		logger.
+			With("port", s.Port, "url", s.Url).
+			Info("Create PrometheusMetricsServer")
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			logger.Fatalf("Monitor PrometheusMetricsServer Error: %v", err)
+		}
+	}()
+
+	<-interrupt
+
+	if err := server.Shutdown(context.Background()); err != nil {
+		logger.Error(err)
+	} else {
+		logger.Info("Shout Down PrometheusMetricsServer")
+	}
+}

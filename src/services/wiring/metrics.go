@@ -2,15 +2,13 @@ package wiring
 
 import (
 	"gango/utils"
-	"path/filepath"
-	"strings"
 )
 
 type Metrics struct {
 }
 
 func (m Metrics) WriteFolder(dir string) error {
-	return utils.WriteFile(dir, filepath.Join(m.FilePath(), m.FileName()), strings.ReplaceAll(metricsFile, "gango", dir))
+	return utils.EnrichTemplate(dir, m)
 }
 
 func (m Metrics) FilePath() string {
@@ -21,20 +19,12 @@ func (m Metrics) FileName() string {
 	return "metrics.go"
 }
 
-var metricsFile = `
-package wiring
+func (m Metrics) TemplateName() string {
+	return "metricsFile.tmpl"
+}
 
-import (
-	"gango/src/lib/monitor"
-
-	"github.com/prometheus/client_golang/prometheus"
-)
-
-var (
-	StartTime = prometheus.NewCounter(prometheus.CounterOpts{
-		Namespace: monitor.NameSpace,
-		Name:      "gango_start_time",
-		Help:      "gango start time",
-	})
-)
-`
+func (m Metrics) TemplateData(name string) map[string]interface{} {
+	return map[string]interface{}{
+		"ProjectName": name,
+	}
+}
