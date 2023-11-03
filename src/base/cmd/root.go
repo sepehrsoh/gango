@@ -28,31 +28,3 @@ func (r Root) TemplateData(name string) map[string]interface{} {
 		"ProjectName": name,
 	}
 }
-
-var rootFile = `
-package base
-
-import (
-	"gango/src/lib/logging"
-
-	"github.com/spf13/cobra"
-)
-
-var (
-	rootCmd = &cobra.Command{
-		Use:   "gango",
-		Short: "Create golang project",
-	}
-	logger =logging.GetLogger("cmd")
-)
-
-func Execute() {
-	rootCmd.AddCommand(serveCmd)
-	err := rootCmd.Execute()
-	if err != nil {
-		logger.Errorln(err)
-	}
-}
-
-func init() {}
-`

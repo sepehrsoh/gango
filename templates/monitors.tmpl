@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"{{.ProjectName}}/src/lib/logging"
 
@@ -15,13 +16,12 @@ import (
 
 )
 
-// TODO replace your name space
 const NameSpace = "{{.NameSpace}}"
 
-var logger = logging.GetLogger("promethues")
+var logger = logging.GetLogger("prometheus")
 
 type PrometheusMetricsServer struct {
-	Url  string
+	URL  string
 	Port string
 }
 
@@ -31,16 +31,17 @@ func (s PrometheusMetricsServer) Register(collector prometheus.Collector) {
 
 func (s PrometheusMetricsServer) Start(interrupt <-chan os.Signal) {
 	mux := http.NewServeMux()
-	mux.Handle(s.Url, promhttp.Handler())
+	mux.Handle(s.URL, promhttp.Handler())
 
 	addr := fmt.Sprintf(":%s", s.Port)
 	server := &http.Server{
-		Addr:    addr,
-		Handler: mux,
+		Addr:              addr,
+		Handler:           mux,
+		ReadHeaderTimeout: time.Second * 5,
 	}
 	go func() {
 		logger.
-			With("port", s.Port, "url", s.Url).
+			With("port", s.Port, "url", s.URL).
 			Info("Create PrometheusMetricsServer")
 		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logger.Fatalf("Monitor PrometheusMetricsServer Error: %v", err)

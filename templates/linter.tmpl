@@ -1,0 +1,63 @@
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - bodyclose
+    - depguard
+    - dogsled
+    - exportloopref
+    - gocyclo
+    - goprintffuncname
+    - gosimple
+    - govet
+    - importas
+    - misspell
+    - nakedret
+    - nilerr
+    - nolintlint
+    - typecheck
+    - unused
+    - usestdlibvars
+    - stylecheck
+    - errcheck
+    - ineffassign
+    - errorlint
+    - gocritic
+    - gosec
+    - prealloc
+    - staticcheck
+    - unconvert
+    - unparam
+    - whitespace
+
+linters-settings:
+  staticcheck:
+    go: "1.20"
+  stylecheck:
+    go: "1.20"
+    checks: [ "all", "-ST1000"]
+  gocyclo:
+    min-complexity: 40
+  gosec:
+    excludes:
+      - G110
+      - G304
+    config:
+      G301: "0750"
+      G302: "0640"
+      G306: "0640"
+
+issues:
+  max-same-issues: 0
+  max-issues-per-linter: 0
+  exclude-use-default: false
+  exclude: [ ]
+  exclude-rules:
+    - linters:
+        - revive
+      source: _ "embed"
+run:
+  timeout: 10m
+  allow-parallel-runners: true
+  tests: false
+  go: '1.20'

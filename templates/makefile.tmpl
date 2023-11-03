@@ -44,3 +44,8 @@ build-linux:
 build-docker:
 	make linux
 	docker build . -t {{.ProjectName}}:latest
+
+.PHONY: linter
+linter:
+	@echo  "running go-lint ..."
+	golangci-lint run

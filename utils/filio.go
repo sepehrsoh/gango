@@ -7,8 +7,10 @@ import (
 	"text/template"
 )
 
+var logger = lib.GetLogger("fileIOLogger")
+
 func EnrichTemplate(dir string, file lib.IWriteTemplate) error {
-	templateFile := file.TemplateName();
+	templateFile := file.TemplateName()
 	templateContent, err := os.ReadFile(filepath.Join("templates", templateFile))
 	if err != nil {
 		return err
@@ -22,7 +24,12 @@ func EnrichTemplate(dir string, file lib.IWriteTemplate) error {
 	if err != nil {
 		return err
 	}
-	defer output.Close()
+	defer func(output *os.File) {
+		err = output.Close()
+		if err != nil {
+			logger.Errorln(err)
+		}
+	}(output)
 
 	err = tmpl.Execute(output, file.TemplateData(dir))
 	if err != nil {

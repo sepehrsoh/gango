@@ -45,7 +45,12 @@ type ZapLoggerFactory struct {
 
 func (d ZapLoggerFactory) New() *zap.SugaredLogger {
 	logger := NewZapSugarLogger(d.Config)
-	defer logger.Sync()
+	defer func(logger *zap.SugaredLogger) {
+    	err := logger.Sync()
+    	if err != nil {
+    		logger.Errorln(err)
+    	}
+    }(logger)
 	return logger
 }
 
