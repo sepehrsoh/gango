@@ -23,6 +23,5 @@ func (m Middleware) TemplateName() string {
 }
 
 func (m Middleware) TemplateData(name string) map[string]interface{} {
-	return map[string]interface{}{
-	}
+	return map[string]interface{}{}
 }

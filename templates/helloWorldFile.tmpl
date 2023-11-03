@@ -1,8 +1,7 @@
 // Code generate by Gango
-package hello_world
+package helloworld
 
 import (
-	"fmt"
 	"net/http"
 
 	"{{.ProjectName}}/src/lib/errs"
@@ -18,7 +17,7 @@ func NewHelloWorldController() *HelloWorldController {
 }
 
 func (d *HelloWorldController) helloWord(c *gin.Context) {
-	_, err := c.Writer.Write([]byte(fmt.Sprint("hello world")))
+	_, err := c.Writer.Write([]byte("hello world"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errs.ErrInternalServer})
 		return

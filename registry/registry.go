@@ -1,10 +1,12 @@
 package registry
 
 import (
-	"gango/lib"
-	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
+
+	"gango/lib"
+
+	"github.com/sirupsen/logrus"
 )
 
 var logger = lib.GetLogger("registry")
@@ -29,7 +31,7 @@ func (r *Registry) Run(basePath string) {
 	for name, file := range r.Files {
 		logrus.Infoln("Run", name)
 		dirPath := filepath.Join(basePath, file.FilePath())
-		if err := os.MkdirAll(dirPath, 0755); err != nil {
+		if err := os.MkdirAll(dirPath, 0750); err != nil {
 			logrus.Error(err)
 		}
 		err := file.WriteFolder(basePath)

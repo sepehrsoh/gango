@@ -23,6 +23,5 @@ func (s Signals) TemplateName() string {
 }
 
 func (s Signals) TemplateData(name string) map[string]interface{} {
-	return map[string]interface{}{
-	}
+	return map[string]interface{}{}
 }

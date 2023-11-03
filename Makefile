@@ -58,3 +58,8 @@ test-project:
 	@rm -rf ./project
 	make all
 	./gango generate project
+
+.PHONY: linter
+linter:
+	@echo  "running go-lint ..."
+	golangci-lint run

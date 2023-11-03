@@ -10,8 +10,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-
-var IdleWorkerError = errors.New("idle worker")
+var ErrIdleWorker = errors.New("idle worker")
 
 var (
 	WorkersHistogram = prometheus.NewHistogramVec(
@@ -72,7 +71,7 @@ func (e *SimpleExecutor) Start(interrupt <-chan os.Signal) {
 			err := e.Worker.Loop()
 			WorkersHistogram.WithLabelValues(reflect.TypeOf(e.Worker).String()).Observe(float64(time.Since(timeStamp).Milliseconds()))
 			if err != nil {
-				if err == IdleWorkerError {
+				if errors.Is(err, ErrIdleWorker) {
 					isIdle = true
 					logger.Debugf("Sleeping %s.", workerName)
 				} else {

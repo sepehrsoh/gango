@@ -4,8 +4,7 @@ import (
 	"gango/utils"
 )
 
-type Config struct {
-}
+type Config struct{}
 
 func (c Config) WriteFolder(dir string) error {
 	return utils.EnrichTemplate(dir, c)
