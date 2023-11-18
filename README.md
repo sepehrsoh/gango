@@ -1,3 +1,5 @@
+[![codebeat badge](https://codebeat.co/badges/da2c9829-f570-4555-ab2a-9bcb7bc9e1e5)](https://codebeat.co/projects/github-com-sepehrsoh-gango-main)
+
 # Gango: A Go-Based Backend Service Framework
 
 Gango is an open-source project written in Go that provides a robust and flexible foundation for developing backend services. Whether you're a seasoned developer or just getting started, Gango simplifies the process of creating backend systems by automating many of the essential tasks.
