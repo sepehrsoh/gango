@@ -10,7 +10,7 @@ import (
 var (
 	StartTime = prometheus.NewCounter(prometheus.CounterOpts{
 		Namespace: monitor.NameSpace,
-		Name:      "{{.ProjectName}}_start_time",
-		Help:      "{{.ProjectName}} start time",
+		Name:      "{{.MetricName}}_start_time",
+		Help:      "{{.MetricName}} start time",
 	})
 )

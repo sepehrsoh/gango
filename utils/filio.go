@@ -19,8 +19,7 @@ func EnrichTemplate(dir string, file lib.IWriteTemplate) error {
 	if err != nil {
 		return err
 	}
-
-	output, err := os.Create(filepath.Join(dir, file.FilePath(), file.FileName()))
+	output, err := os.Create(filepath.Join(GetProjectDir(dir), file.FilePath(), file.FileName()))
 	if err != nil {
 		return err
 	}

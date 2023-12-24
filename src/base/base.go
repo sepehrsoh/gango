@@ -14,11 +14,12 @@ type BaseProject struct {
 }
 
 func (b *BaseProject) Run(name string) {
-	makeMainDirectory(name)
+	projectName := utils.GetProjectDir(name)
+	makeMainDirectory(projectName)
 	createGoMod(name)
-	createMakefile(name)
-	createReadMeFile(name)
-	createLinter(name)
+	createMakefile(projectName)
+	createReadMeFile(projectName)
+	createLinter(projectName)
 }
 
 func makeMainDirectory(name string) {
@@ -30,7 +31,7 @@ func makeMainDirectory(name string) {
 
 func createGoMod(name string) {
 	cmd := exec.Command("go", "mod", "init", name)
-	cmd.Dir = name
+	cmd.Dir = utils.GetProjectDir(name)
 	err := cmd.Run()
 	if err != nil {
 		logger.Panic(err)

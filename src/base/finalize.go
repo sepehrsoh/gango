@@ -1,17 +1,17 @@
 package base
 
 import (
-	"os/exec"
-
 	"gango/utils"
+	"os/exec"
 )
 
 type FinalizeProject struct {
 }
 
 func (b *FinalizeProject) Run(name string) {
-	downloadPackages(name)
-	createDockerfile(name)
+	projectName := utils.GetProjectDir(name)
+	downloadPackages(projectName)
+	createDockerfile(projectName)
 }
 
 func downloadPackages(name string) {

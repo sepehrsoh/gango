@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"gango/utils"
 	"os"
 	"path/filepath"
 
@@ -30,7 +31,7 @@ func (r *Registry) Run(basePath string) {
 	}
 	for name, file := range r.Files {
 		logrus.Infoln("Run", name)
-		dirPath := filepath.Join(basePath, file.FilePath())
+		dirPath := filepath.Join(utils.GetProjectDir(basePath), file.FilePath())
 		if err := os.MkdirAll(dirPath, 0750); err != nil {
 			logrus.Error(err)
 		}
