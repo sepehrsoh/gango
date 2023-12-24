@@ -2,6 +2,8 @@ package utils
 
 import (
 	"gango/lib"
+
+	"embed"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -9,9 +11,12 @@ import (
 
 var logger = lib.GetLogger("fileIOLogger")
 
+//go:embed templates
+var content embed.FS
+
 func EnrichTemplate(dir string, file lib.IWriteTemplate) error {
 	templateFile := file.TemplateName()
-	templateContent, err := os.ReadFile(filepath.Join("templates", templateFile))
+	templateContent, err := content.ReadFile(filepath.Join("templates", templateFile))
 	if err != nil {
 		return err
 	}
@@ -19,8 +24,7 @@ func EnrichTemplate(dir string, file lib.IWriteTemplate) error {
 	if err != nil {
 		return err
 	}
-
-	output, err := os.Create(filepath.Join(dir, file.FilePath(), file.FileName()))
+	output, err := os.Create(filepath.Join(GetProjectDir(dir), file.FilePath(), file.FileName()))
 	if err != nil {
 		return err
 	}

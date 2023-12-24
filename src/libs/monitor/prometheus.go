@@ -24,9 +24,10 @@ func (m Monitors) TemplateName() string {
 }
 
 func (m Monitors) TemplateData(name string) map[string]interface{} {
-	namespace := strings.ToUpper(name[:1]) + name[1:]
+	projectName := utils.GetProjectDir(name)
+	namespace := strings.ToUpper(projectName[:1]) + projectName[1:]
 	return map[string]interface{}{
 		"ProjectName": name,
-		"NameSpace": namespace,
+		"NameSpace":   namespace,
 	}
 }

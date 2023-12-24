@@ -26,5 +26,6 @@ func (m Metrics) TemplateName() string {
 func (m Metrics) TemplateData(name string) map[string]interface{} {
 	return map[string]interface{}{
 		"ProjectName": name,
+		"MetricName":  utils.GetProjectDir(name),
 	}
 }
