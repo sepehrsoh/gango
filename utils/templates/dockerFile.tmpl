@@ -1,14 +1,21 @@
 # Code generate by Gango
 FROM golang:1.20-alpine as base
 
+RUN ["apk","add","make"]
+
 WORKDIR /build
 COPY . /build/.
 
-CMD ["make","all"]
+RUN ["make","all"]
 
-FROM base 
+FROM base
 
 WORKDIR /app
-COPY {{.ProjectName}} {{.ProjectName}}
+COPY --from=base /build/{{.ProjectName}} {{.ProjectName}}
 
-CMD ["./{{.ProjectName}}","serve"]
+RUN ["chmod","+x","{{.ProjectName}}"]
+
+EXPOSE 8000
+EXPOSE 9090
+
+ENTRYPOINT ["./{{.ProjectName}}","serve"]
