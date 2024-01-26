@@ -33,7 +33,7 @@ func (s PrometheusMetricsServer) Start(interrupt <-chan os.Signal) {
 	mux := http.NewServeMux()
 	mux.Handle(s.URL, promhttp.Handler())
 
-	addr := fmt.Sprintf(":%s", s.Port)
+	addr := fmt.Sprintf("0.0.0.0:%s", s.Port)
 	server := &http.Server{
 		Addr:              addr,
 		Handler:           mux,

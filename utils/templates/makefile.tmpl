@@ -42,7 +42,6 @@ build-linux:
 
 .PHONY: build-docker
 build-docker:
-	make linux
 	docker build . -t {{.ProjectName}}:latest
 
 .PHONY: linter

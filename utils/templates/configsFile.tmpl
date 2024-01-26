@@ -15,7 +15,7 @@ func GetEnv(key, fallback string) string {
 func NewConfigFromEnv() Config {
 	return Config{
 		ServerAddress: ServerAddress{
-			Host: GetEnv("SERVER_HOST", "localhost"),
+			Host: GetEnv("SERVER_HOST", "0.0.0.0"),
 			Port: GetEnv("SERVER_PORT", "8000"),
 		},
 		Monitor: Monitor{
