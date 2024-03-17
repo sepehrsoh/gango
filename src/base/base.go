@@ -1,11 +1,14 @@
 package base
 
 import (
-	"gango/lib"
-	"gango/utils"
+	"bufio"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
+
+	"gango/lib"
+	"gango/utils"
 )
 
 var logger = lib.GetLogger("base")
@@ -25,7 +28,18 @@ func (b *BaseProject) Run(name string) {
 func makeMainDirectory(name string) {
 	err := os.Mkdir(name, 0750)
 	if err != nil {
-		logger.Panic(err)
+		fmt.Printf("There exist folder with name %v\nAre your sure to rewrite this folder?\n[y/n]: ", name)
+		reader := bufio.NewReader(os.Stdin)
+		response, err := reader.ReadString('\n')
+		if err != nil {
+			logger.Panic(err)
+		}
+		if strings.ToLower(strings.TrimSpace(response)) == "y" {
+			_ = os.RemoveAll(name)
+			makeMainDirectory(name)
+			return
+		}
+		logger.Panic("process stopped")
 	}
 }
 
@@ -103,9 +117,7 @@ func (m LinterWriter) TemplateName() string {
 
 func (m LinterWriter) TemplateData(name string) map[string]interface{} {
 	splitName := strings.Split(name, "/")
-	return map[string]interface{}{
-		"ProjectName": splitName[len(splitName)-1],
-	}
+	return utils.GetDefaultTemplateValues(splitName[len(splitName)-1])
 }
 
 func (m LinterWriter) FilePath() string {

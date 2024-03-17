@@ -7,7 +7,9 @@ import (
 	"{{.ProjectName}}/src/lib/executors"
 	"{{.ProjectName}}/src/service/configs"
 
-	"github.com/go-redis/redis"
+    {{ if .withRedis }}"github.com/go-redis/redis"{{ end }}
+	{{ if .withElastic }}"github.com/olivere/elastic/v7"{{ end }}
+	{{ if .withPostgres }}"gorm.io/gorm"{{ end }}
 )
 
 
@@ -22,13 +24,16 @@ func NewWire() *Wire {
 type Wire struct {
 	config 				configs.Config
 	executorsRegistry   *executors.Registry
-	// add more providers like redis implementation here
-	redis               *redis.Client
+	{{ if .withRedis }}redis               *redis.Client{{ end }}
+	{{ if .withElastic }}elastic             *elastic.Client{{ end }}
+	{{ if .withPostgres }}postgres                  *gorm.DB {{ end }}
 }
 
 //	initProviders initials providers you are using
 func (w *Wire) initProviders() {
-	//  w.GetRedis()
+    {{ if .withRedis }}w.GetRedis(){{ end }}
+	{{ if .withElastic }}w.GetElasticSearch(){{ end }}
+	{{ if .withPostgres }}w.GetPostgres(){{ end }}
 }
 
 func (w *Wire) init() {

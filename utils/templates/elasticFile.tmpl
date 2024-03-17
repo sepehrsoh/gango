@@ -1,0 +1,34 @@
+// Code generate by Gango
+package providers
+
+import (
+	"fmt"
+    "log"
+    "os"
+
+	"github.com/olivere/elastic/v7"
+)
+
+func NewElastic(configs ElasticConfig) (*elastic.Client, error) {
+	url := fmt.Sprintf("http://%s:%s", configs.Host, configs.Port)
+
+	options := []elastic.ClientOptionFunc{
+		elastic.SetURL(url),
+		elastic.SetSniff(false),
+		elastic.SetTraceLog(log.New(os.Stdout, "[ElasticSearch]", log.LstdFlags)),
+		elastic.SetHealthcheck(false),
+	}
+
+	if configs.Username != "" {
+		options = append(options, elastic.SetBasicAuth(configs.Username, configs.Password))
+	}
+
+	return elastic.NewClient(options...)
+}
+
+type ElasticConfig struct {
+	Host     string
+	Port     string
+	Username string
+	Password string
+}

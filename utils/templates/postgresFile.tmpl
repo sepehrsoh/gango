@@ -1,0 +1,58 @@
+// Code generate by Gango
+package providers
+
+import (
+	"fmt"
+	"log"
+    "os"
+    "time"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	gormLogger "gorm.io/gorm/logger"
+)
+
+
+
+func NewPostgresFromConfig(config PostgresConfig) (*gorm.DB, error) {
+	connectionString := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s TimeZone=%s", config.Host, config.Port, config.User, config.Password, config.DB, config.Timezone)
+	newLogger := gormLogger.New(
+		log.New(os.Stdout, "[Postgres]", log.LstdFlags), // io writer
+		gormLogger.Config{
+			SlowThreshold:             time.Millisecond * 200,
+			LogLevel:                  gormLogger.Warn,
+			IgnoreRecordNotFoundError: true,
+			Colorful:                  true,
+		},
+	)
+	gormConfig := &gorm.Config{Logger: newLogger}
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN:                  connectionString,
+		PreferSimpleProtocol: true, // disables implicit prepared statement usage
+	}), gormConfig)
+	if err != nil {
+		return db, err
+	}
+	sqlDb, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+	sqlDb.SetMaxIdleConns(config.MaxIdleConns)
+	sqlDb.SetMaxOpenConns(config.MaxOpenConns)
+	sqlDb.SetConnMaxLifetime(time.Duration(config.ConnMaxLifetime) * time.Minute)
+
+	return db, nil
+}
+
+type PostgresConfig struct{
+    Host            string
+    Port            string
+    User            string
+    Password        string
+    DB              string
+    Timezone        string
+    ConnMaxLifetime int
+    MaxIdleConns    int
+    MaxOpenConns    int
+}
