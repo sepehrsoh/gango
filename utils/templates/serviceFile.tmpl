@@ -6,13 +6,15 @@ import (
 
 	"{{.ProjectName}}/src/service/providers"
 	"{{.ProjectName}}/src/lib/logging"
-	
-	"github.com/go-redis/redis"
+
+	{{ if .withRedis }}"github.com/go-redis/redis"{{ end }}
+	{{ if .withElastic }}"github.com/olivere/elastic/v7"{{ end }}
+	{{ if .withPostgres }}"gorm.io/gorm"{{ end }}
 )
 
 var logger = logging.GetLogger("service")
 
-func (w *Wire) GetRedis() *redis.Client {
+{{ if .withRedis }}func (w *Wire) GetRedis() *redis.Client {
 	if w.redis == nil {
 		client, err := providers.NewRedisFromConfig(providers.RedisConfig{
 			Server:   w.config.Redis.Server,
@@ -20,12 +22,50 @@ func (w *Wire) GetRedis() *redis.Client {
 			DB:       w.config.Redis.DB,
 		})
 		if err != nil {
-			panic(err)
+			logger.Panic(err)
 		}
 		w.redis = client
 	}
 	return w.redis
-}
+}{{ end }}
+
+{{ if .withElastic }}func (w *Wire) GetElasticSearch() *elastic.Client {
+	if w.elastic == nil {
+		elastic, err := providers.NewElastic(providers.ElasticConfig{
+		Host    : w.config.Elastic.Host    ,
+        Port    : w.config.Elastic.Port    ,
+        Username: w.config.Elastic.Username,
+        Password: w.config.Elastic.Password,
+		})
+		if err != nil {
+			logger.Panic(err)
+		}
+		w.elastic = elastic
+	}
+	return w.elastic
+}{{ end }}
+
+{{ if .withPostgres }}func (w *Wire) GetPostgres() *gorm.DB {
+	if w.postgres == nil {
+		db, err := providers.NewPostgresFromConfig(providers.PostgresConfig{
+		    Host:            w.config.Postgres.Host,
+            Port:            w.config.Postgres.Port,
+            User:            w.config.Postgres.User,
+            Password:        w.config.Postgres.Password,
+            DB:              w.config.Postgres.DB,
+            Timezone:        w.config.Postgres.Timezone,
+            ConnMaxLifetime: w.config.Postgres.ConnMaxLifetime,
+            MaxIdleConns:    w.config.Postgres.MaxIdleConns,
+            MaxOpenConns:    w.config.Postgres.MaxOpenConns,
+		})
+		if err != nil {
+			logger.Panic(err)
+		}
+		w.postgres = db
+	}
+	return w.postgres
+}{{ end }}
+
 
 func (w *Wire) GetGinServer() func() {
 	gin := providers.NewGinServer(w.GetAuthService())
@@ -41,4 +81,3 @@ func (w *Wire) GetGinServer() func() {
 		}
 	}
 }
-

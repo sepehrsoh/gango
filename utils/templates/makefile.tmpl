@@ -2,6 +2,7 @@
 BINARY_NAME={{.ProjectName}}
 BINARY_UNIX=$(BINARY_NAME)
 GOCMD=go
+PROXY=GOPROXY=https://goproxy.io,direct
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOLIST=$(GOCMD) list
@@ -27,9 +28,9 @@ clean:
 
 .PHONY: dependencies
 dependencies:
-	$(GOMOD) tidy
-	$(GOMOD) download
-	$(GOMOD) vendor
+	$(PROXY) $(GOMOD) tidy
+	$(PROXY) $(GOMOD) download
+	$(PROXY) $(GOMOD) vendor
 
 .PHONY: build
 build:

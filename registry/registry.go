@@ -1,11 +1,11 @@
 package registry
 
 import (
-	"gango/utils"
 	"os"
 	"path/filepath"
 
 	"gango/lib"
+	"gango/utils"
 
 	"github.com/sirupsen/logrus"
 )

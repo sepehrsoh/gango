@@ -5,6 +5,15 @@ import (
 )
 
 type Service struct {
+	options utils.ServiceOptions
+}
+
+func NewService(configs ...utils.Options) Service {
+	opts := utils.DefaultOptions
+	for _, config := range configs {
+		config.Apply(&opts)
+	}
+	return Service{options: opts}
 }
 
 func (s Service) WriteFolder(dir string) error {
@@ -24,7 +33,16 @@ func (s Service) TemplateName() string {
 }
 
 func (s Service) TemplateData(name string) map[string]interface{} {
-	return map[string]interface{}{
-		"ProjectName": name,
+	tmpl := utils.GetDefaultTemplateValues(name)
+	if s.options.WithRedis {
+		tmpl["withRedis"] = true
 	}
+	if s.options.WithElastic {
+		tmpl["withElastic"] = true
+	}
+	if s.options.WithPostgres {
+		tmpl["withPostgres"] = true
+	}
+
+	return tmpl
 }

@@ -24,7 +24,6 @@ func (r Redis) TemplateName() string {
 }
 
 func (r Redis) TemplateData(name string) map[string]interface{} {
-	return map[string]interface{}{
-		"ProjectName": name,
-	}
+	tmpl := utils.GetDefaultTemplateValues(name)
+	return tmpl
 }

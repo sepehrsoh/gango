@@ -57,7 +57,7 @@ build-docker:
 test-project:
 	@rm -rf ./project
 	make all
-	./gango generate project
+	./gango generate project -n test -p redis -p elastic
 
 .PHONY: linter
 linter:

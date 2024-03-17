@@ -2,13 +2,17 @@
 
 # Gango: A Go-Based Backend Service Framework
 
-Gango is an open-source project written in Go that provides a robust and flexible foundation for developing backend services. Whether you're a seasoned developer or just getting started, Gango simplifies the process of creating backend systems by automating many of the essential tasks.
+Gango is an open-source project written in Go that provides a robust and flexible foundation for developing backend
+services. Whether you're a seasoned developer or just getting started, Gango simplifies the process of creating backend
+systems by automating many of the essential tasks.
 
 ## Features
 
-- **Service Generation**: With Gango, you can easily generate a new backend service project. This includes creating a new directory with all the basic components you need for your backend system.
+- **Service Generation**: With Gango, you can easily generate a new backend service project. This includes creating a
+  new directory with all the basic components you need for your backend system.
 
-- **Docker Integration**: Gango streamlines the process of containerizing your service. A Dockerfile is provided, and you can build a Docker image with a simple command.
+- **Docker Integration**: Gango streamlines the process of containerizing your service. A Dockerfile is provided, and
+  you can build a Docker image with a simple command.
 
 ## Getting Started
 
@@ -37,12 +41,20 @@ Before you begin, ensure you have the following prerequisites:
 3. Create a new project using Gango:
 
    ```bash
-   ./gango generate [service-name]
+   ./gango generate -n project-name -p redis -p elastic -p postgres
    ```
+    * **_Note: supported providers listed below:_**
+   
+        * `redis`
 
-   This command will create a new directory with your chosen service name, preconfigured with the basics you need for a backend system.
+        * `elastic`
 
-4. If you want to dockerize your service, navigate to the new service directory:
+        * `postgres`
+
+   This command will create a new directory with your chosen service name, preconfigured with the basics you need for a
+   backend system.
+
+4. If you want to dockerized your service, navigate to the new service directory:
 
    ```bash
    cd [service-name]
@@ -56,17 +68,20 @@ Before you begin, ensure you have the following prerequisites:
 
 ## Usage
 
-Now that you have your Gango-based backend service up and running, you can start building and customizing your project. Here are some commands and conventions you should be aware of:
+Now that you have your Gango-based backend service up and running, you can start building and customizing your project.
+Here are some commands and conventions you should be aware of:
 
 - Modify your service code, endpoints, and database configurations in the `[service-name]` directory.
 - Create routes, add middleware, and define models and controllers.
 - Leverage the power of Go to build your backend system according to your requirements.
 
-For more detailed information on how to work with Gango, please check the [documentation](https://github.com/sepehrsoh/gango/wiki).
+For more detailed information on how to work with Gango, please check
+the [documentation](https://github.com/sepehrsoh/gango/wiki).
 
 ## Contributing
 
-We welcome contributions from the community to make Gango even better. If you'd like to contribute, please follow our [Contribution Guidelines](CONTRIBUTING.md).
+We welcome contributions from the community to make Gango even better. If you'd like to contribute, please follow
+our [Contribution Guidelines](CONTRIBUTING.md).
 
 ## License
 
@@ -78,7 +93,9 @@ We'd like to express our gratitude to the open-source community for their valuab
 
 ---
 
-Thank you for choosing Gango for your backend development needs. We hope it simplifies the process of building robust and scalable backend services. If you have any questions or encounter issues, please feel free to open an issue on the GitHub repository.
+Thank you for choosing Gango for your backend development needs. We hope it simplifies the process of building robust
+and scalable backend services. If you have any questions or encounter issues, please feel free to open an issue on the
+GitHub repository.
 
 [GitHub Repository](https://github.com/sepehrsoh/gango)
 

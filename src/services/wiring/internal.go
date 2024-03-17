@@ -24,7 +24,6 @@ func (i Internal) TemplateName() string {
 }
 
 func (i Internal) TemplateData(name string) map[string]interface{} {
-	return map[string]interface{}{
-		"ProjectName": name,
-	}
+	tmpl := utils.GetDefaultTemplateValues(name)
+	return tmpl
 }

@@ -5,6 +5,7 @@ import (
 )
 
 type Wiring struct {
+	options utils.ServiceOptions
 }
 
 func (w Wiring) WriteFolder(dir string) error {
@@ -24,7 +25,23 @@ func (w Wiring) TemplateName() string {
 }
 
 func (w Wiring) TemplateData(name string) map[string]interface{} {
-	return map[string]interface{}{
-		"ProjectName": name,
+	tmpl := utils.GetDefaultTemplateValues(name)
+	if w.options.WithRedis {
+		tmpl["withRedis"] = true
 	}
+	if w.options.WithElastic {
+		tmpl["withElastic"] = true
+	}
+	if w.options.WithPostgres {
+		tmpl["withPostgres"] = true
+	}
+	return tmpl
+}
+
+func NewWiring(configs ...utils.Options) Wiring {
+	opts := utils.DefaultOptions
+	for _, config := range configs {
+		config.Apply(&opts)
+	}
+	return Wiring{options: opts}
 }

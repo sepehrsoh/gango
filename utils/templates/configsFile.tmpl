@@ -3,6 +3,8 @@ package configs
 
 import (
 	"os"
+
+	{{ if .withPostgres }}"github.com/spf13/cast"{{ end }}
 )
 
 func GetEnv(key, fallback string) string {
@@ -22,18 +24,37 @@ func NewConfigFromEnv() Config {
 			Host: GetEnv("MONITOR_ROUT", "/metrics"),
 			Port: GetEnv("MONITOR_PORT", "9090"),
 		},
-		Redis: Redis{
-			Server:   GetEnv("REDIS_SERVER", "localhost"),
+		{{ if .withRedis }}Redis: Redis{
+			Server:   GetEnv("REDIS_SERVER", "localhost:6379"),
 			DB:  	  GetEnv("REDIS_DB", "0"),
 			Password: GetEnv("REDIS_PASSWORD", ""),
-		},
+		},{{ end }}
+		{{ if .withElastic }}Elastic: Elastic{
+		    Host:     GetEnv("ELASTIC_HOST", "localhost"),
+            Port:     GetEnv("ELASTIC_PORT", "9200"),
+            Username: GetEnv("ELASTIC_USERNAME", ""),
+            Password: GetEnv("ELASTIC_PASSWORD", ""),
+		},{{ end }}
+		{{ if .withPostgres}}Postgres: Postgres{
+		    Host:              GetEnv("POSTGRES_HOST", "localhost"),
+            Port:              GetEnv("POSTGRES_PORT", "5432"),
+            User:              GetEnv("POSTGRES_USER", "postgres"),
+            Password:          GetEnv("POSTGRES_PASSWORD", ""),
+            DB:                GetEnv("POSTGRES_DB", "postgres"),
+            Timezone:          GetEnv("POSTGRES_TIMEZONE", "UTC"),
+            ConnMaxLifetime:   cast.ToInt(GetEnv("POSTGRES_CONN_MAX_TIME", "1")),
+            MaxIdleConns:      cast.ToInt(GetEnv("POSTGRES_MAX_IDLE_CONN", "10")),
+            MaxOpenConns:      cast.ToInt(GetEnv("POSTGRES_MAX_OPEN_CONN", "10")),
+		},{{ end }}
 	}
 }
 
 type Config struct {
 	ServerAddress ServerAddress
 	Monitor       Monitor
-	Redis         Redis
+	{{ if .withRedis }}Redis         Redis{{ end }}
+	{{ if .withElastic }}Elastic       Elastic{{ end }}
+	{{ if .withPostgres }}Postgres      Postgres{{ end }}
 }
 
 type ServerAddress struct {
@@ -46,8 +67,27 @@ type Monitor struct {
 	Port string
 }
 
-type Redis struct {
+{{ if .withRedis }}type Redis struct {
 	Server   string
 	DB 	     string
 	Password string
-}
+}{{ end }}
+
+{{ if .withElastic }}type Elastic struct {
+    Host     string
+    Port     string
+    Username string
+    Password string
+}{{ end }}
+
+{{ if .withPostgres }}type Postgres struct{
+    Host            string
+    Port            string
+    User            string
+    Password        string
+    DB              string
+    Timezone        string
+    ConnMaxLifetime int
+    MaxIdleConns    int
+    MaxOpenConns    int
+}{{ end }}
