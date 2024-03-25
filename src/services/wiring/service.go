@@ -43,6 +43,10 @@ func (s Service) TemplateData(name string) map[string]interface{} {
 	if s.options.WithPostgres {
 		tmpl["withPostgres"] = true
 	}
-
+	if s.options.WithGrpc {
+		tmpl["grpc"] = true
+	} else {
+		tmpl["gin"] = true
+	}
 	return tmpl
 }

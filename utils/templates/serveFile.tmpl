@@ -19,9 +19,12 @@ var serveCmd = &cobra.Command{
 func serve() {
 	wiringService := wiring.NewWire()
 	wiringService.GetExecutorsRegistry().Start()
-	httpServer := wiringService.GetGinServer()
-	go httpServer()
+	{{ if .gin }}httpServer := wiringService.GetGinServer()
+	go httpServer(){{ end }}
+	{{ if .grpc }}grpcServer, stopServer := wiringService.GetGRPCServer()
+	go grpcServer(){{ end }}
 
 	term := misc.CreateTerminateChannel()
 	<-term
+	{{ if .grpc }}stopServer(){{ end }}
 }

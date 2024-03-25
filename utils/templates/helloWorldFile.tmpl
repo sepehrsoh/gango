@@ -23,8 +23,7 @@ func (d *HelloWorldController) helloWord(c *gin.Context) {
 		return
 	}
 }
-
-func (d *HelloWorldController) RegisterRoutes(rg *gin.RouterGroup) {
+{{ if .gin }}func (d *HelloWorldController) RegisterRoutes(rg *gin.RouterGroup) {
 	rg.GET("/hello-world", d.helloWord)
-}
+}{{ end }}
 

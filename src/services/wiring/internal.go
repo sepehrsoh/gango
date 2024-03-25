@@ -5,6 +5,15 @@ import (
 )
 
 type Internal struct {
+	options utils.ServiceOptions
+}
+
+func NewInternal(configs ...utils.Options) Internal {
+	opts := utils.DefaultOptions
+	for _, config := range configs {
+		config.Apply(&opts)
+	}
+	return Internal{options: opts}
 }
 
 func (i Internal) WriteFolder(dir string) error {
@@ -25,5 +34,10 @@ func (i Internal) TemplateName() string {
 
 func (i Internal) TemplateData(name string) map[string]interface{} {
 	tmpl := utils.GetDefaultTemplateValues(name)
+	if i.options.WithGrpc {
+		tmpl["grpc"] = true
+	} else {
+		tmpl["gin"] = true
+	}
 	return tmpl
 }

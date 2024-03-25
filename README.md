@@ -51,6 +51,8 @@ Before you begin, ensure you have the following prerequisites:
 
         * `postgres`
 
+        * `grpc` **Note**: by default use `gin engine` if grpc was not set
+
    This command will create a new directory with your chosen service name, preconfigured with the basics you need for a
    backend system.
 

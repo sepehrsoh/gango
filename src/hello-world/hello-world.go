@@ -5,6 +5,15 @@ import (
 )
 
 type HelloWord struct {
+	options utils.ServiceOptions
+}
+
+func NewHelloWord(configs ...utils.Options) HelloWord {
+	opts := utils.DefaultOptions
+	for _, config := range configs {
+		config.Apply(&opts)
+	}
+	return HelloWord{options: opts}
 }
 
 func (h HelloWord) WriteFolder(dir string) error {
@@ -24,7 +33,11 @@ func (h HelloWord) TemplateName() string {
 }
 
 func (h HelloWord) TemplateData(name string) map[string]interface{} {
-	return map[string]interface{}{
-		"ProjectName": name,
+	tmpl := utils.GetDefaultTemplateValues(name)
+	if h.options.WithGrpc {
+		tmpl["grpc"] = true
+	} else {
+		tmpl["gin"] = true
 	}
+	return tmpl
 }

@@ -2,7 +2,10 @@
 package middlewares
 
 import (
-	"github.com/gin-gonic/gin"
+	{{ if .gin }}"github.com/gin-gonic/gin"{{end}}
+	{{ if .grpc }}"context"
+
+    grpcAuth "github.com/grpc-ecosystem/go-grpc-middleware/auth"{{end}}
 )
 
 type Middleware struct {
@@ -12,9 +15,19 @@ func NewMiddleware() *Middleware {
 	return &Middleware{}
 }
 
+{{ if .gin }}
 func (m *Middleware) AuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// TODO complete with your logic
 	}
 }
+{{end}}
+{{if .grpc}}
+func (m *Middleware) AuthMiddleWare() grpcAuth.AuthFunc {
+	return func(ctx context.Context) (context.Context, error) {
+		// TODO complete with your logic
+		return ctx, nil
+	}
+}
+{{end}}
 

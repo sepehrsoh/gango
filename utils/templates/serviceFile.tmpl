@@ -3,6 +3,7 @@ package wiring
 
 import (
 	"fmt"
+	{{ if .grpc}} "net" {{ end }}
 
 	"{{.ProjectName}}/src/service/providers"
 	"{{.ProjectName}}/src/lib/logging"
@@ -66,7 +67,7 @@ var logger = logging.GetLogger("service")
 	return w.postgres
 }{{ end }}
 
-
+{{ if .gin }}
 func (w *Wire) GetGinServer() func() {
 	gin := providers.NewGinServer(w.GetAuthService())
 	w.registerHandlers(gin)
@@ -81,3 +82,24 @@ func (w *Wire) GetGinServer() func() {
 		}
 	}
 }
+{{ end }}
+{{ if .grpc }}
+func (w *Wire) GetGRPCServer() (runServer func(), stopServer func()) {
+	grpcServer := providers.NewGrpFromConf(w.GetAuthService())
+	w.registerHandlers(grpcServer)
+	runServer = func() {
+		logger.Infow("Start Grpc Server", "Host", w.config.ServerAddress.Host, "Port", w.config.ServerAddress.Port)
+		lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", w.config.ServerAddress.Host, w.config.ServerAddress.Port))
+		if err != nil {
+			logger.Fatal(err)
+		}
+		if err := grpcServer.Serve(lis); err != nil {
+			logger.Fatal(err)
+		}
+	}
+	stopServer = func() {
+		grpcServer.GracefulStop()
+	}
+	return
+}
+{{ end }}

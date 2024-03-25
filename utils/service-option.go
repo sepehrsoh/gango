@@ -6,6 +6,7 @@ type ServiceOptions struct {
 	WithRedis    bool
 	WithElastic  bool
 	WithPostgres bool
+	WithGrpc     bool
 }
 
 type Options interface {
@@ -42,10 +43,17 @@ func WireWithPostgres(enable bool) Options {
 	})
 }
 
+func WireWithGrpc(enable bool) Options {
+	return newFuncWireOption(func(options *ServiceOptions) {
+		options.WithGrpc = enable
+	})
+}
+
 type Config struct {
 	Redis    bool
 	Elastic  bool
 	Postgres bool
+	Grpc     bool
 }
 
 func NewDefaultConf() Config {
@@ -53,6 +61,7 @@ func NewDefaultConf() Config {
 		Redis:    false,
 		Elastic:  false,
 		Postgres: false,
+		Grpc:     false,
 	}
 }
 
@@ -61,5 +70,6 @@ func GetWireConfigs(cnf Config) []Options {
 	ops = append(ops, WireWithRedis(cnf.Redis))
 	ops = append(ops, WireWithElastic(cnf.Elastic))
 	ops = append(ops, WireWithPostgres(cnf.Postgres))
+	ops = append(ops, WireWithGrpc(cnf.Grpc))
 	return ops
 }

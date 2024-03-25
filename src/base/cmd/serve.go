@@ -4,7 +4,17 @@ import (
 	"gango/utils"
 )
 
-type Serve struct{}
+type Serve struct {
+	options utils.ServiceOptions
+}
+
+func NewServe(configs ...utils.Options) Serve {
+	opts := utils.DefaultOptions
+	for _, config := range configs {
+		config.Apply(&opts)
+	}
+	return Serve{options: opts}
+}
 
 func (s Serve) WriteFolder(dir string) error {
 	return utils.EnrichTemplate(dir, s)
@@ -23,7 +33,11 @@ func (s Serve) TemplateName() string {
 }
 
 func (s Serve) TemplateData(name string) map[string]interface{} {
-	return map[string]interface{}{
-		"ProjectName": name,
+	tmpl := utils.GetDefaultTemplateValues(name)
+	if s.options.WithGrpc {
+		tmpl["grpc"] = true
+	} else {
+		tmpl["gin"] = true
 	}
+	return tmpl
 }

@@ -1,0 +1,83 @@
+// Code generate by Gango
+package providers
+
+import (
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpcAuth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
+)
+
+var grpcLogger = logrus.NewEntry(logrus.StandardLogger())
+
+func NewGrpcServer(ops []grpc.ServerOption) *grpc.Server {
+	grpcServer := grpc.NewServer(ops...)
+	handleGRPCServerSignals(grpcServer)
+	return grpcServer
+}
+
+func NewGrpFromConf(authFunc grpcAuth.AuthFunc) *grpc.Server {
+	ops := make([]grpc.ServerOption, 0)
+	ops = append(ops, grpc.KeepaliveEnforcementPolicy(getDefaultKeepAliveEnforcementPolicy()))
+	ops = append(ops, grpc.KeepaliveParams(getDefaultKeepAliveServerParameters()))
+	ops = append(ops, grpc.MaxRecvMsgSize(getMessageSizeFromConfig()))
+	ops = append(ops, grpc.UnaryInterceptor(getUnaryInterceptor(authFunc)))
+	ops = append(ops, grpc.StreamInterceptor(getChainStreamServer(authFunc)))
+	return NewGrpcServer(ops)
+}
+
+func getDefaultKeepAliveEnforcementPolicy() keepalive.EnforcementPolicy {
+	return keepalive.EnforcementPolicy{
+		MinTime: 5 * time.Second, // If a client pings more than once every 5 seconds, terminate the connection
+	}
+}
+
+func getDefaultKeepAliveServerParameters() keepalive.ServerParameters {
+	return keepalive.ServerParameters{
+		MaxConnectionIdle:     10 * time.Second, // If a client is idle for 15 seconds, send a GOAWAY
+		MaxConnectionAge:      30 * time.Second, // If any connection is alive for more than 30 seconds, send a GOAWAY
+		MaxConnectionAgeGrace: 3 * time.Second,  // Allow 5 seconds for pending RPCs to complete before forcibly closing connections
+		Time:                  1 * time.Second,  // Ping the client if it is idle for 5 seconds to ensure the connection is still active
+		Timeout:               1 * time.Second,  // Wait 1 second for the ping ack before assuming the connection is dead
+	}
+}
+
+func getMessageSizeFromConfig() int {
+	return 10 * 1024 * 1024
+}
+
+func getChainStreamServer(authFunc grpcAuth.AuthFunc) grpc.StreamServerInterceptor {
+	return grpcMiddleware.ChainStreamServer(
+		grpcPrometheus.StreamServerInterceptor,
+		grpcLogrus.StreamServerInterceptor(grpcLogger),
+		grpcAuth.StreamServerInterceptor(authFunc))
+}
+
+func getUnaryInterceptor(authFunc grpcAuth.AuthFunc) grpc.UnaryServerInterceptor {
+	return grpcMiddleware.ChainUnaryServer(
+		grpcPrometheus.UnaryServerInterceptor,
+		grpcLogrus.UnaryServerInterceptor(grpcLogger),
+		grpcAuth.UnaryServerInterceptor(authFunc),
+	)
+}
+
+func handleGRPCServerSignals(grpcServer *grpc.Server) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGINT)
+	signal.Notify(c, syscall.SIGKILL)
+	signal.Notify(c, syscall.SIGTERM)
+	go func() {
+		for range c {
+			grpcServer.GracefulStop()
+			os.Exit(0)
+		}
+	}()
+}

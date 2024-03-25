@@ -7,7 +7,12 @@ import (
 	"{{.ProjectName}}/src/lib/monitor"
 	"{{.ProjectName}}/src/middlewares"
 
-	"github.com/gin-gonic/gin"
+	{{ if .gin }}"github.com/gin-gonic/gin"{{ end }}
+	{{ if .grpc }}grpcAuth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"google.golang.org/grpc"
+
+    {{ end }}
 )
 
 func (w *Wire) GetMetricsServer() *monitor.PrometheusMetricsServer {
@@ -24,6 +29,7 @@ func (w *Wire) GetExecutorsRegistry() *executors.Registry {
 	return w.executorsRegistry
 }
 
+{{ if .gin }}
 func (w *Wire) GetAuthService() gin.HandlerFunc {
 	return middlewares.NewMiddleware().AuthMiddleWare()
 }
@@ -33,6 +39,18 @@ func (w *Wire) registerHandlers(engine *gin.Engine) {
 	v1 := engine.Group("/v1")
 	w.GetHelloWordController().RegisterRoutes(v1)
 }
+{{ end }}
+{{ if .grpc }}
+func (w *Wire) GetAuthService() grpcAuth.AuthFunc {
+	return middlewares.NewMiddleware().AuthMiddleWare()
+}
+
+func (w *Wire) registerHandlers(grpcServer *grpc.Server) {
+	grpc_prometheus.EnableHandlingTimeHistogram()
+	grpc_prometheus.Register(grpcServer)
+	// TODO register services base on your proto file generated
+}
+{{ end }}
 
 func (w *Wire) GetHelloWordController() *helloWorld.HelloWorldController {
 	return helloWorld.NewHelloWorldController()
