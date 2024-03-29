@@ -21,10 +21,9 @@ func serve() {
 	wiringService.GetExecutorsRegistry().Start()
 	{{ if .gin }}httpServer := wiringService.GetGinServer()
 	go httpServer(){{ end }}
-	{{ if .grpc }}grpcServer, stopServer := wiringService.GetGRPCServer()
+	{{ if .grpc }}grpcServer := wiringService.GetGRPCServer()
 	go grpcServer(){{ end }}
 
 	term := misc.CreateTerminateChannel()
 	<-term
-	{{ if .grpc }}stopServer(){{ end }}
 }

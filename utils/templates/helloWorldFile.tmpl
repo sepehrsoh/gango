@@ -2,11 +2,13 @@
 package helloworld
 
 import (
+    {{ if .grpc}}"context"{{ end }}
+    {{ if .gin}}
 	"net/http"
 
 	"{{.ProjectName}}/src/lib/errs"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"{{ end }}
 )
 
 type HelloWorldController struct {
@@ -16,14 +18,21 @@ func NewHelloWorldController() *HelloWorldController {
 	return &HelloWorldController{}
 }
 
-func (d *HelloWorldController) helloWord(c *gin.Context) {
+{{ if .grpc}}
+func (d HelloWorldController) helloWord(ctx context.Context) {
+    // TODO complete here base on your proto file
+	return
+}
+{{ end }}
+{{ if .gin }}
+func (d HelloWorldController) helloWord(c *gin.Context) {
 	_, err := c.Writer.Write([]byte("hello world"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errs.ErrInternalServer})
 		return
 	}
 }
-{{ if .gin }}func (d *HelloWorldController) RegisterRoutes(rg *gin.RouterGroup) {
+func (d HelloWorldController) RegisterRoutes(rg *gin.RouterGroup) {
 	rg.GET("/hello-world", d.helloWord)
 }{{ end }}
 

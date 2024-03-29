@@ -77,7 +77,6 @@ func handleGRPCServerSignals(grpcServer *grpc.Server) {
 	go func() {
 		for range c {
 			grpcServer.GracefulStop()
-			os.Exit(0)
 		}
 	}()
 }

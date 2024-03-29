@@ -1,7 +1,6 @@
 package registry
 
 import (
-	"fmt"
 	"gango/src/base"
 	"gango/src/base/cmd"
 	hello_world "gango/src/hello-world"
@@ -84,7 +83,6 @@ func registerBase(register *Registry, conf utils.Config) {
 }
 
 func registerProviders(register *Registry, conf utils.Config) {
-	fmt.Println("hihihihi", conf.Grpc)
 	if conf.Grpc {
 		register.Register("service/providers/grpc", providers.Grpc{})
 	} else {

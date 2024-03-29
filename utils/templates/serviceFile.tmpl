@@ -84,10 +84,10 @@ func (w *Wire) GetGinServer() func() {
 }
 {{ end }}
 {{ if .grpc }}
-func (w *Wire) GetGRPCServer() (runServer func(), stopServer func()) {
+func (w *Wire) GetGRPCServer() func() {
 	grpcServer := providers.NewGrpFromConf(w.GetAuthService())
 	w.registerHandlers(grpcServer)
-	runServer = func() {
+	runServer := func() {
 		logger.Infow("Start Grpc Server", "Host", w.config.ServerAddress.Host, "Port", w.config.ServerAddress.Port)
 		lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", w.config.ServerAddress.Host, w.config.ServerAddress.Port))
 		if err != nil {
@@ -97,9 +97,6 @@ func (w *Wire) GetGRPCServer() (runServer func(), stopServer func()) {
 			logger.Fatal(err)
 		}
 	}
-	stopServer = func() {
-		grpcServer.GracefulStop()
-	}
-	return
+	return runServer
 }
 {{ end }}
