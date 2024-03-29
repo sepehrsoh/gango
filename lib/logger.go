@@ -67,7 +67,7 @@ func NewZapSugarLogger(config LogConfiguration) *zap.SugaredLogger {
 			EncodeLevel: zapcore.LowercaseColorLevelEncoder,
 			EncodeTime:  zapcore.ISO8601TimeEncoder,
 		},
-		//OutputPaths:      []string{path, "stdout"},
+		OutputPaths:      []string{path, "stdout"},
 		ErrorOutputPaths: []string{path, "stderr"},
 	}
 	logger, _ := zapBuilder.Build()

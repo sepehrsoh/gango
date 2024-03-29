@@ -21,7 +21,7 @@ func downloadPackages(name string) {
 	cmd.Dir = name
 	err := cmd.Run()
 	if err != nil {
-		logger.Panic(err)
+		logger.Errorf("download packages error: %v", err)
 	}
 }
 
@@ -49,7 +49,7 @@ func (d DockerfileWriter) FileName() string {
 func createDockerfile(name string) {
 	err := utils.EnrichTemplate(name, DockerfileWriter{})
 	if err != nil {
-		logger.Panic(err)
+		logger.Errorf("create docker file error: %v", err)
 	}
 }
 
@@ -94,6 +94,6 @@ func NewEnvFileWriter(configs ...utils.Options) EnvFileWriter {
 func createEnvFile(name string, cnf utils.Config) {
 	err := utils.EnrichTemplate(name, NewEnvFileWriter(utils.GetWireConfigs(cnf)...))
 	if err != nil {
-		logger.Panic(err)
+		logger.Errorf("create env file error: %v", err)
 	}
 }

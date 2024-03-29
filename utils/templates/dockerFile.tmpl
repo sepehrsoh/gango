@@ -1,21 +1,15 @@
 # Code generate by Gango
-FROM golang:1.20-alpine as base
+FROM golang:1.21-bullseye as builder
 
-RUN ["apk","add","make"]
+WORKDIR /go/src
 
-WORKDIR /build
-COPY . /build/.
+COPY . .
 
-RUN ["make","all"]
-
-FROM base
-
-WORKDIR /app
-COPY --from=base /build/{{.ProjectName}} {{.ProjectName}}
-
-RUN ["chmod","+x","{{.ProjectName}}"]
+RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -o /{{.ProjectName}} cmd/base.go
+FROM debian:buster-slim
 
 EXPOSE 8000
 EXPOSE 9090
 
+COPY --from=builder /{{.ProjectName}} ./
 ENTRYPOINT ["./{{.ProjectName}}","serve"]

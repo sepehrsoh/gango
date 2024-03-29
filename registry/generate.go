@@ -62,6 +62,7 @@ func Generate(name string, conf utils.Config) {
 
 	finalize := base.FinalizeProject{}
 	finalize.Run(name, conf)
+	logger.Infof("project %v created", name)
 }
 
 func registerLibrary(register *Registry) {
