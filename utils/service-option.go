@@ -1,6 +1,11 @@
 package utils
 
-var DefaultOptions = ServiceOptions{WithRedis: false}
+var DefaultOptions = ServiceOptions{
+	WithRedis:    false,
+	WithPostgres: false,
+	WithGrpc:     false,
+	WithElastic:  false,
+}
 
 type ServiceOptions struct {
 	WithRedis    bool
