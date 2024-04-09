@@ -125,7 +125,7 @@ func (m LinterWriter) FilePath() string {
 }
 
 func (m LinterWriter) FileName() string {
-	return ".golangci.yaml"
+	return ".golang-ci.yaml"
 }
 
 func createLinter(name string) {
